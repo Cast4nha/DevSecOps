@@ -69,7 +69,7 @@ jobs:
         run: njsscan .
   
   deploy:
-    needs: [DAST-snyk]
+    needs: [SAST-snyk]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
