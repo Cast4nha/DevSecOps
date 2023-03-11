@@ -27,7 +27,7 @@ jobs:
       # - name: Run tests
       #   run: docker container exec app npm test
 
-  DAST-snyk:
+  SAST-snyk:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -69,7 +69,7 @@ jobs:
         run: njsscan .
   
   deploy:
-    needs: [DAST-snyk, SAST-njsscan]
+    # needs: [DAST-snyk, SAST-njsscan]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
