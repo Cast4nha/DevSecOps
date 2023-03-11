@@ -1,4 +1,4 @@
-FROM node:18.7.0
+FROM node:18.14.2
 COPY package.json .
 COPY src/ src/
 WORKDIR /src
