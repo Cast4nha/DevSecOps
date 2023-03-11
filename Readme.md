@@ -10,7 +10,7 @@ Este projeto tem como objetivo a criação de uma aplicação que facilite a ges
  6. Outros
 
 ## Etapas de desenvolvimento
-1. Semana 08/02/2023 - 16/02/2023
+<!-- 1. Semana 08/02/2023 - 16/02/2023
 - [X] Criação da API REST
 - [ ] Implementação do JWToken
 - [X] Criação da página de login
@@ -27,7 +27,7 @@ Este projeto tem como objetivo a criação de uma aplicação que facilite a ges
 - [ ] A definir
 - [ ] A definir
 - [ ] A definir
-- [ ] A definir
+- [ ] A definir -->
 
 # Contribuições
 
