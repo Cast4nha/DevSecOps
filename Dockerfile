@@ -4,4 +4,4 @@ COPY src/ src/
 WORKDIR /src
 RUN npm install
 COPY . .
-CMD [ "node", "index.js" ]
+CMD [ "node", "./src/routes/index.js" ]
