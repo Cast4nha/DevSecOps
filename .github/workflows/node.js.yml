@@ -27,6 +27,31 @@ jobs:
       # - name: Run tests
       #   run: docker container exec app npm test
 
+  DAST-owasp-zap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Install Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '16'
+      
+      - name: Install OWASP ZAP
+        run: |
+          wget -q -O - https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions.xml | grep -oP "https.*?linux\.tar\.gz" | head -n1 | xargs wget -q -O zap.tar.gz
+          tar -xvf zap.tar.gz
+          rm zap.tar.gz
+          mv ZAP* zap
+      
+      - name: Run OWASP ZAP scan
+        run: |
+          export ZAP_PATH=$(pwd)/zap/zap.sh
+          export TARGET_URL=http://localhost:3000
+          $(echo $ZAP_PATH) -cmd -quickurl $TARGET_URL -quickprogress -quickscan spider
+          $(echo $ZAP_PATH) -cmd -quickurl $TARGET_URL -quickprogress -quickscan activeScan
+
   SAST-snyk:
     needs: build
     runs-on: ubuntu-latest
@@ -68,17 +93,6 @@ jobs:
       - name: Run NJSScan
         run: njsscan .
         
-  stackhawk-hawkscan:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: stackhawk/hawkscan-action@v2.0.1
-      with:
-        apiKey: ${{ secrets.HAWK_API_KEY }}
-        codeScanningAlerts: true
-        githubToken: ${{ github.token }}
-        
-
   deploy-:
     needs: [build, SAST-snyk]
     runs-on: ubuntu-latest
@@ -91,7 +105,3 @@ jobs:
         image: c4st4nha/projetosrc
         tag: latest
         registry: docker.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-  
-          
