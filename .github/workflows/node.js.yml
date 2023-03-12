@@ -69,6 +69,7 @@ jobs:
         run: njsscan .
         
   hawkscan:
+    needs: build
     name: HawkScan
     runs-on: ubuntu-latest
     steps:
@@ -80,6 +81,7 @@ jobs:
           apiKey: ${{ secrets.HAWK_API_KEY }}
 
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       -
