@@ -79,7 +79,7 @@ jobs:
         apiKey: ${{ secrets.HAWK_API_KEY }}
         
 
-  deploy:
+  deploy-image:
     needs: [build, SAST-snyk]
     runs-on: ubuntu-latest
     steps:
