@@ -1,4 +1,4 @@
-name: Node.js CI/CD
+name: Node.js CI/CD with DAST
 
 on:
   push:
@@ -27,30 +27,7 @@ jobs:
       # - name: Run tests
       #   run: docker container exec app npm test
 
-  DAST-owasp-zap:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Install Java
-        uses: actions/setup-java@v2
-        with:
-          java-version: '16'
-      
-      - name: Install OWASP ZAP
-        run: |
-          wget -q -O - https://raw.githubusercontent.com/zaproxy/zap-admin/master/ZapVersions.xml | grep -oP "https.*?linux\.tar\.gz" | head -n1 | xargs wget -q -O zap.tar.gz
-          tar -xvf zap.tar.gz
-          rm zap.tar.gz
-          mv ZAP* zap
-      
-      - name: Run OWASP ZAP scan
-        run: |
-          export ZAP_PATH=$(pwd)/zap/zap.sh
-          export TARGET_URL=http://localhost:3000
-          $(echo $ZAP_PATH) -cmd -quickurl $TARGET_URL -quickprogress -quickscan spider
-          $(echo $ZAP_PATH) -cmd -quickurl $TARGET_URL -quickprogress -quickscan activeScan
+
 
   SAST-snyk:
     needs: build
@@ -92,9 +69,30 @@ jobs:
       
       - name: Run NJSScan
         run: njsscan .
-        
+
+  DAST:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Start containers
+        run: docker-compose -f "docker-compose.yml" up -d
+
+      - name: Install and configure ZAP
+        run: |
+          sudo apt-get update && sudo apt-get install -y openjdk-8-jre-headless
+          wget https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Crossplatform.tar.gz
+          tar -xzf ZAP_2.11.0_Crossplatform.tar.gz
+          export PATH=$PATH:/github/workspace/ZAP_2.11.0/zap.sh
+      
+      - name: Run DAST scan with ZAP
+        run: |
+          zap-cli quick-scan -s xss,sqli --self-contained --start-optional "$(docker inspect --format='{{.NetworkSettings.Networks.bridge.IPAddress}}' $(docker ps -aqf "name=app"))"
+
   deploy-:
-    needs: [build, SAST-snyk]
+    needs: [build, SAST-snyk, DAST]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
