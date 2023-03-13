@@ -70,26 +70,37 @@ jobs:
       - name: Run NJSScan
         run: njsscan .
 
+   
+
   DAST:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      - name: Start containers
-        run: docker-compose -f "docker-compose.yml" up -d
 
-      - name: Install and configure ZAP
+      - name: Install Docker
+        uses: docker/setup-docker@v1
+
+      - name: Start app
+        run: docker-compose -f docker-compose.yml up -d
+
+      - name: Wait for app to start
+        run: sleep 15
+
+      - name: Run OWASP ZAP DAST scan
         run: |
-          sudo apt-get update && sudo apt-get install -y openjdk-8-jre-headless
-          wget https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Crossplatform.tar.gz
-          tar -xzf ZAP_2.11.0_Crossplatform.tar.gz
-          export PATH=$PATH:/github/workspace/ZAP_2.11.0/zap.sh
-      
-      - name: Run DAST scan with ZAP
-        run: |
-          zap-cli quick-scan -s xss,sqli --self-contained --start-optional "$(docker inspect --format='{{.NetworkSettings.Networks.bridge.IPAddress}}' $(docker ps -aqf "name=app"))"
+          docker run --network host -t owasp/zap2docker-stable zap-baseline.py \
+          -t http://localhost:3000 \
+          -g gen.conf \
+          -r report.html
+          
+      - name: Save report as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: zap-report
+          path: report.html
+
 
   deploy-:
     needs: [build, SAST-snyk, DAST]
