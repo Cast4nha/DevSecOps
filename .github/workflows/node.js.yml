@@ -85,9 +85,7 @@ jobs:
         uses: docker://owasp/zap2docker-weekly:latest
         with:
           args: -c ./zap-full-scan.py -t http://localhost:8080 -r report.html
-        ports:
-          - 8080:8080
-        env:
+    env:
           ZAP_PORT: 8080
           ZAP_DAEMON: "true"
 
