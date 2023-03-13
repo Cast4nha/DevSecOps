@@ -27,8 +27,6 @@ jobs:
       # - name: Run tests
       #   run: docker container exec app npm test
 
-
-
   SAST-snyk:
     needs: build
     runs-on: ubuntu-latest
@@ -69,9 +67,8 @@ jobs:
       
       - name: Run NJSScan
         run: njsscan .
-
-   
-
+        
+        
   DAST:
     needs: build
     runs-on: ubuntu-latest
@@ -79,38 +76,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Docker
-        uses: docker/setup-docker@v1
-
-      - name: Start app
-        run: docker-compose -f docker-compose.yml up -d
-
-      - name: Wait for app to start
-        run: sleep 15
-
-      - name: Run OWASP ZAP DAST scan
+      - name: Install dependencies
         run: |
-          docker run --network host -t owasp/zap2docker-stable zap-baseline.py \
-          -t http://localhost:3000 \
-          -g gen.conf \
-          -r report.html
-          
-      - name: Save report as artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: zap-report
-          path: report.html
+          sudo apt-get update
+          sudo apt-get install -y nmap
 
+      - name: Run DAST with OWASP ZAP
+        uses: docker://owasp/zap2docker-weekly:latest
+        with:
+          args: -c ./zap-full-scan.py -t http://localhost:8080 -r report.html
+        ports:
+          - 8080:8080
+        env:
+          ZAP_PORT: 8080
+          ZAP_DAEMON: "true"
 
   deploy-:
     needs: [build, SAST-snyk, DAST]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Build and Push Docker Image
-      uses: mr-smithers-excellent/docker-build-push@v4
-      with:
-        image: c4st4nha/projetosrc
-        tag: latest
-        registry: docker.io
+      - name: Build and Push Docker Image
+        uses: mr-smithers-excellent/docker-build-push@v4
+        with:
+          image: c4st4nha/projetosrc
+          tag: latest
+          registry: docker.io
