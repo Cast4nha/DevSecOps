@@ -90,7 +90,7 @@ jobs:
           ZAP_DAEMON: "true"
 
   deploy-:
-    needs: [build, SAST-snyk, DAST]
+    needs: [build, SAST-snyk]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
