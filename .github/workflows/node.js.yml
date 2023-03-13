@@ -101,3 +101,6 @@ jobs:
           image: c4st4nha/projetosrc
           tag: latest
           registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
