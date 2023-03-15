@@ -21,10 +21,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       
-      - name: Start containers
-        run: docker-compose -f "docker-compose.yml" up
-
-      - name: Run tests
+      - name: Inicia container
+        run: docker-compose -p projetodevsecops -f "docker-compose.yml" up -d
+      
+      - name: Executa teste
         run: docker container exec app npm test
 
   SAST-snyk-dependencies:
