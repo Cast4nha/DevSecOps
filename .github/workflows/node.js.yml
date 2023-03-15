@@ -68,26 +68,19 @@ jobs:
       - name: Run NJSScan
         run: njsscan .
         
-        
-  DAST:
-    needs: build
+  soos_dast_baseline_analysis:
+    name: SOOS DAST Baseline Analysis
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y nmap
-
-      - name: Run DAST with OWASP ZAP
-        uses: docker://owasp/zap2docker-weekly:latest
+      - name: Run SOOS DAST Baseline Analysis
+        uses: soos-io/soos-dast-github-action@v1.2.5
         with:
-          args: -c ./zap-full-scan.py -t http://localhost:8080 -r report.html
-    env:
-          ZAP_PORT: 8080
-          ZAP_DAEMON: "true"
+          client_id: ${{ secrets.SOOS_CLIENT_ID }}
+          api_key: ${{ secrets.SOOS_API_KEY }}
+          project_name: "DevSecOps"
+          scan_mode: "baseline"
+          target_url: "https://cast4nha.github.io/trabalhofinal/"
+          
 
   deploy-:
     needs: [build, SAST-snyk]
