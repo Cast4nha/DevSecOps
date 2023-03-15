@@ -24,8 +24,8 @@ jobs:
       - name: Start containers
         run: docker-compose -f "docker-compose.yml" up
 
-      # - name: Run tests
-      #   run: docker container exec app npm test
+      - name: Run tests
+        run: docker container exec app npm test
 
   SAST-snyk-dependencies:
     needs: build
