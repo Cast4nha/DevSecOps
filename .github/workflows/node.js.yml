@@ -69,6 +69,7 @@ jobs:
         run: njsscan .
         
   DAST-SOOS:
+    needs: build
     name: SOOS DAST Baseline Analysis
     runs-on: ubuntu-latest
     steps:
