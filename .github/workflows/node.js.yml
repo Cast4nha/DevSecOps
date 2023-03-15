@@ -27,7 +27,7 @@ jobs:
       # - name: Run tests
       #   run: docker container exec app npm test
 
-  SAST-snyk:
+  SAST-snyk-dependencies:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +48,7 @@ jobs:
       - name: Run SAST scan for lib vulnerabilities
         run: snyk test .
 
-  SAST-njsscan:
+  SAST-njsscan-patterns:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +68,7 @@ jobs:
       - name: Run NJSScan
         run: njsscan .
         
-  soos_dast_baseline_analysis:
+  DAST-SOOS:
     name: SOOS DAST Baseline Analysis
     runs-on: ubuntu-latest
     steps:
@@ -83,7 +83,7 @@ jobs:
           
 
   deploy-:
-    needs: [build, SAST-snyk]
+    needs: [build, SAST-snyk, DAST-SOOS]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
