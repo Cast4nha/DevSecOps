@@ -83,7 +83,7 @@ jobs:
           
 
   deploy-:
-    needs: [build, SAST-snyk, DAST-SOOS]
+    needs: [build, SAST-njsscan-patterns, DAST-SOOS, SAST-snyk-dependencies]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
