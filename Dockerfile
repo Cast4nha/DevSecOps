@@ -1,7 +1,8 @@
-FROM node:18.14.2
-COPY package.json .
-COPY src/ src/
-WORKDIR /src
+FROM node:18.7
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY package.json /usr/src/app/
 RUN npm install
-COPY . .
-CMD [ "node", "./src/routes/index.js" ]
+COPY . /usr/src/app
+EXPOSE 3000
+CMD [ "node", "app.js" ]
