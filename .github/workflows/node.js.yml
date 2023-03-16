@@ -21,6 +21,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       
+      - name: create env file
+        run: |
+          touch .env
+          echo DB_USER="${{ secrets.DB_USER }}" >> .env
+          echo DB_PASS="${{ secrets.DB_PASS }}" >> .env
+          echo SECRET="${{ secrets.SECRET }}" >> .env
       - name: Inicia container
         run: docker-compose up -d
       
