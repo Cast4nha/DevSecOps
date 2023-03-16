@@ -22,13 +22,13 @@ jobs:
           cache: 'npm'
       
       - name: Inicia container
-        run: docker-compose -p projetodevsecops -f "docker-compose.yml" up -d
+        run: docker-compose "docker-compose.yml" up -d
       
       - name: Executa teste
         run: docker container exec app npm test
 
   SAST-snyk-dependencies:
-    needs: build
+    #needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -49,7 +49,7 @@ jobs:
         run: snyk test .
 
   SAST-njsscan-patterns:
-    needs: build
+    #needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -69,7 +69,7 @@ jobs:
         run: njsscan .
         
   DAST-SOOS:
-    needs: build
+    #needs: build
     name: SOOS DAST Baseline Analysis
     runs-on: ubuntu-latest
     steps:
