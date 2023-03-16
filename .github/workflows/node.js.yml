@@ -22,7 +22,7 @@ jobs:
           cache: 'npm'
       
       - name: Inicia container
-        run: docker-compose "docker-compose.yml" up -d
+        run: docker-compose up -d
       
       - name: Executa teste
         run: docker container exec app npm test
