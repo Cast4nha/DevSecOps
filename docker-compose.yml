@@ -6,6 +6,6 @@ services:
     build: .
     image: projetodevsecops
     ports:
-      - "4000:4000"
-    command: ["npm", "test"]
+      - "3000:3000"
+    
     
