@@ -174,8 +174,6 @@ mongoose
   })
   .catch((err) => console.log(err));
 
-  
-
 
 
 exports.app = app
