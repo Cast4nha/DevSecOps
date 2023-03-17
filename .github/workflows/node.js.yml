@@ -40,7 +40,7 @@ jobs:
         run: snyk test .
 
   SAST-njsscan-patterns:
-    needs: build
+    needs: teste-unit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -57,7 +57,7 @@ jobs:
         run: njsscan .
 
   DAST-SOOS:
-    needs: build
+    needs: teste-unit
     name: SOOS DAST Baseline Analysis
     runs-on: ubuntu-latest
     steps:
@@ -71,7 +71,7 @@ jobs:
           target_url: "https://cast4nha.github.io/trabalhofinal/"
 
   deploy-:
-    needs: [build, SAST-njsscan-patterns, DAST-SOOS, SAST-snyk-dependencies]
+    needs: [teste-unit, SAST-njsscan-patterns, DAST-SOOS, SAST-snyk-dependencies]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
