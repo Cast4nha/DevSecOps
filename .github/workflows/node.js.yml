@@ -33,11 +33,7 @@ jobs:
         run: docker-compose up --build -d
 
       - name: Executa teste
-        run: |
-          docker container exec app npm test
-          if [ $? -ne 0 ]; then
-            exit 1
-          fi
+        run: docker container exec app npm test
       
 
   SAST-snyk-dependencies:
