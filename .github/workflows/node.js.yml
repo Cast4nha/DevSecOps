@@ -17,8 +17,10 @@ jobs:
           echo DB_PASS="${{ secrets.DB_PASS }}" >> .env
           echo SECRET="${{ secrets.SECRET }}" >> .env
       - name: Inicia container
-        run: docker-compose up --build
-
+        run: docker-compose up 
+        
+      - name: Executa teste
+        run: docker container exec app npm test
 
   SAST-snyk-dependencies:
     needs: teste-unit
