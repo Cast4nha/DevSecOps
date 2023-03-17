@@ -1,4 +1,4 @@
-name: Node.js CI/CD with DAST
+name: Node.js CI/CD 
 
 on:
   push:
@@ -10,16 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [14.x, 16.x, 18.x]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       
       - name: Install Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+        - run: npm test
       
       - name: create env file
         run: |
@@ -27,12 +28,13 @@ jobs:
           echo DB_USER="${{ secrets.DB_USER }}" >> .env
           echo DB_PASS="${{ secrets.DB_PASS }}" >> .env
           echo SECRET="${{ secrets.SECRET }}" >> .env
+      
       - name: Inicia container
         run: docker-compose up -d
       
 
   SAST-snyk-dependencies:
-    #needs: build
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -53,7 +55,7 @@ jobs:
         run: snyk test .
 
   SAST-njsscan-patterns:
-    #needs: build
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -73,7 +75,7 @@ jobs:
         run: njsscan .
         
   DAST-SOOS:
-    #needs: build
+    needs: build
     name: SOOS DAST Baseline Analysis
     runs-on: ubuntu-latest
     steps:
