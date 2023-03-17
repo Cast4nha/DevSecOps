@@ -22,7 +22,7 @@ jobs:
         run: docker container exec app npm test
 
   SAST-snyk-dependencies:
-    needs: build
+    needs: teste-unit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
