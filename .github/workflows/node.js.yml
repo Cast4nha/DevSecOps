@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - run: npm test
+  
 
       - name: create env file
         run: |
@@ -31,6 +31,9 @@ jobs:
 
       - name: Inicia container
         run: docker-compose up -d
+
+      - name: Executa teste
+        run: docker container exec app npm test
 
   SAST-snyk-dependencies:
     needs: build
