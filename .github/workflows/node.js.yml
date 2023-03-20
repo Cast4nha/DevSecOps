@@ -66,7 +66,7 @@ jobs:
           api_key: ${{ secrets.SOOS_API_KEY }}
           project_name: "DevSecOps"
           scan_mode: "baseline"
-          target_url: "https://projetodevsecops-felipevcastanheira.b4a.run/"
+          target_url: "https://dwtwut-3000.csb.app/"
 
   deploy-:
     needs: [teste-unit, SAST-njsscan-patterns, DAST-SOOS, SAST-snyk-dependencies]
